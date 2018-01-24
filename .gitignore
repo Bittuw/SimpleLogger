@@ -1,0 +1,7 @@
+/Debug
+/Release
+
+/TestLogger
+/ipch
+/vs
+*.db

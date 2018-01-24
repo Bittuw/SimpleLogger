@@ -1,0 +1,12 @@
+﻿  stdafx.cpp
+  dllmain.cpp
+  Logger.cpp
+     Создается библиотека C:\Users\Boss\Desktop\work\Logger\Release\Logger.lib и объект C:\Users\Boss\Desktop\work\Logger\Release\Logger.exp
+  Создание кода
+c:\users\boss\desktop\work\logger\logger\logger.cpp(71): warning C4715: Logger::createInstance: значение возвращается не при всех путях выполнения
+  All 869 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+  Logger.vcxproj -> C:\Users\Boss\Desktop\work\Logger\Release\Logger.dll
+  Logger.vcxproj -> C:\Users\Boss\Desktop\work\Logger\Release\Logger.pdb (Full PDB)
+c:\users\boss\desktop\work\logger\logger\logger.cpp(88): warning C6031: Возвращаемое значение пропущено: "_wmkdir".
+c:\users\boss\desktop\work\logger\logger\logger.cpp(82): warning C6386: Переполнение буфера при записи в "buffer":  доступный для записи объем равен "520" байт, однако записать можно только "1040" байт.
