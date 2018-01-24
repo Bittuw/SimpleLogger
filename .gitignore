@@ -4,4 +4,6 @@
 /TestLogger
 /ipch
 /vs
+/Logger/Debug
+/Logger/Relese
 *.db

@@ -1,9 +1,0 @@
-﻿  stdafx.cpp
-  dllmain.cpp
-  Logger.cpp
-c:\users\boss\desktop\work\logger\logger\logger.h(67): warning C4251: Logger::path: class "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" должен иметь dll-интерфейс для использования клиентами class "Logger"
-  c:\workprograms\mcvs 2015\vc\include\xstring(2633): note:  см. объявление "std::basic_string<char,std::char_traits<char>,std::allocator<char>>"
-c:\users\boss\desktop\work\logger\logger\logger.cpp(90): warning C4715: Logger::createInstance: значение возвращается не при всех путях выполнения
-     ╤ючфрхЄё  сшсышюЄхър C:\Users\Boss\Desktop\Work\Logger\Debug\Logger.lib ш юс·хъЄ C:\Users\Boss\Desktop\Work\Logger\Debug\Logger.exp
-  Logger.vcxproj -> C:\Users\Boss\Desktop\Work\Logger\Debug\Logger.dll
-  Logger.vcxproj -> C:\Users\Boss\Desktop\Work\Logger\Debug\Logger.pdb (Full PDB)
