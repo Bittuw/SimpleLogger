@@ -13,6 +13,7 @@ namespace LoggerThreadState {
 	static std::atomic<bool> exit = false;
 
 	std::shared_ptr<std::condition_variable> exitCV = std::make_shared<std::condition_variable>();
+	std::shared_ptr<MessageQueue> ref_queue;
 	Buffer_ref ref_buffer;
 	std::shared_ptr<std::vector<Channal>> ref_flush;
 	std::shared_ptr<std::mutex> ref_mutex;
@@ -119,6 +120,7 @@ LoggingThread::LoggingThread(std::shared_ptr<MessageQueue>& queue, std::shared_p
 	_buffer_commands(std::make_shared<std::vector<std::shared_ptr<BaseLoggerMessage>>>())
 {
 	LoggerThreadState::working = true;
+	LoggerThreadState::ref_queue = queue;
 	LoggerThreadState::ref_buffer = _buffer_commands;
 }
 
@@ -169,12 +171,22 @@ void LoggingThread::RunningInThread() {
 
 void LoggingThread::flush() {
 	try {
+
 		if (!LoggerThreadState::ref_buffer->empty())
 			for (auto command : *(LoggerThreadState::ref_buffer))
 				if (!command->_message_delivered)
 					command->work();
 
 		LoggerThreadState::ref_buffer->clear();
+
+		if (!LoggerThreadState::ref_queue->empty())
+			while (!LoggerThreadState::ref_queue->empty()) {
+				auto command = LoggerThreadState::ref_queue->front();
+				LoggerThreadState::ref_queue->pop();
+				command->work();
+			}
+
+		
 
 		for (auto dist : *LoggerThreadState::ref_flush) {
 			dist.out_dist->flush();

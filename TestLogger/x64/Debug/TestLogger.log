@@ -1,0 +1,2 @@
+﻿  stdafx.cpp
+c:\work\c++\simplelogger\testlogger\stdafx.h(15): fatal error C1083: Не удается открыть файл включение: Logger.h: No such file or directory

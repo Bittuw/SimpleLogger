@@ -1,0 +1,33 @@
+﻿  stdafx.cpp
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): error C2039: shared_ptr: не является членом "std"
+  predefined C++ types (compiler internal)(208): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): error C2365: std: переопределение; предыдущим определением было "пространство имен"
+  predefined C++ types (compiler internal)(208): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(16): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(15): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(16): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(16): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(50): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(50): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(50): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(56): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(56): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(56): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(56): error C2238: непредвиденные лексемы перед ";"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(57): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(57): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(57): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(57): error C2238: непредвиденные лексемы перед ";"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(58): error C2027: использование неопределенного типа "std"
+  C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(17): note:  см. объявление "std"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(58): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(58): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+C:\Users\Boss\Desktop\Work\Logger\TestLogger\Dll\Logger.h(58): error C2238: непредвиденные лексемы перед ";"

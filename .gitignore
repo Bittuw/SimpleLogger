@@ -1,9 +1,9 @@
 /Debug
 /Release
-
-/TestLogger
 /ipch
-/vs
+.vs/
 /Logger/Debug
 /Logger/Relese
 *.db
+x64/
+*.opendb

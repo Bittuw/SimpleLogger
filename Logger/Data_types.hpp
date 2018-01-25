@@ -121,11 +121,10 @@ struct UserMessage : public BaseLoggerMessage {
 
 		ss << std::setw(7) << TypeMessageString[static_cast<int>(_type_message)] << ' ';
 		ss << _message_time.tCurrentTime << ' ';
-		ss << _user_message << ' ';
 
-		ss >> temp_type >> temp_data >> temp_time >> temp_message;
+		ss >> temp_type >> temp_data >> temp_time;
 
-		_out_message = temp_type + " || " + temp_data + ' ' + temp_time + " || " + temp_message + "\n";
+		_out_message = temp_type + " || " + temp_data + ' ' + temp_time + " || " + _user_message + "\n";
 	}
 };
 
