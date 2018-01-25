@@ -71,13 +71,21 @@ public:
 
 		tCurrentTime = sDay + ":" + sMonth + ":" + sYear + " " + sHour + ":" + sMinute + ":" + sSecond;
 	};
-
-	friend std::ostream& operator<<(std::ostream& stream, const CurrentTime&);
 };
+
+struct ChannalLine {
+	std::string Name;
+	std::shared_ptr<std::ostream> out_dist;
+	ModeTypes mode;
+};
+
+typedef ChannalLine Channal;
 ////
+
 struct BaseLoggerMessage {
 	CommandTypes _message_type;
 	CurrentTime _message_time;
+	bool _message_delivered = false;
 
 	BaseLoggerMessage(CommandTypes message_type) 
 		: _message_type(message_type), _message_time()  {}
@@ -98,7 +106,9 @@ struct UserMessage : public BaseLoggerMessage {
 	}
 
 	void work() override {
+		_destination->clear();
 		*_destination << _out_message;
+		_message_delivered = true;
 	}
 
 	void format() {
@@ -106,20 +116,30 @@ struct UserMessage : public BaseLoggerMessage {
 
 		std::string temp_type;
 		std::string temp_time;
+		std::string temp_data;
 		std::string temp_message;
 
-		ss << std::setw(7) << TypeMessageString[static_cast<int>(_type_message)];
-		ss << _message_time.tCurrentTime;
-		ss << _user_message;
+		ss << std::setw(7) << TypeMessageString[static_cast<int>(_type_message)] << ' ';
+		ss << _message_time.tCurrentTime << ' ';
+		ss << _user_message << ' ';
 
-		ss >> temp_message >> temp_time >> temp_type;
+		ss >> temp_type >> temp_data >> temp_time >> temp_message;
 
-		_out_message = temp_time + " || " + temp_time + " || " + temp_message + "\n";
+		_out_message = temp_type + " || " + temp_data + ' ' + temp_time + " || " + temp_message + "\n";
 	}
 };
 
-struct ExceptionMessage {
+struct ExceptionMessage : public BaseLoggerMessage {
+	std::shared_ptr<std::vector<Channal>> _destination;
 
+	ExceptionMessage(std::shared_ptr<std::vector<Channal>> destination) :
+		BaseLoggerMessage(CommandTypes::EXIT_MESSAGE), _destination(destination){	}
+
+	void work() override {
+		for (auto dist : *_destination) {
+			std::dynamic_pointer_cast<std::ofstream>(dist.out_dist)->close();
+		}
+	}
 };
 
 struct ExitMessage {
@@ -127,16 +147,5 @@ struct ExitMessage {
 };
 
 using MessageQueue = std::queue<std::shared_ptr<BaseLoggerMessage>>;
-
-/////
-struct ChannalLine {
-	std::string Name;
-	std::shared_ptr<std::ostream> out_dist;
-	ModeTypes mode;
-};
-
-typedef ChannalLine Channal; // канал записи
-//typedef LoggerMessage Message; // Сообщения
-//typedef CommandMessage Command; // Команды
-//typedef std::queue<Command> MessageQueue; // очередь команд
+using Buffer_ref = std::shared_ptr<std::vector<std::shared_ptr<BaseLoggerMessage>>>;
 

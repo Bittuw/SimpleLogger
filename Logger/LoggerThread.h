@@ -8,6 +8,8 @@ public:
 	void* operator new[](size_t) = delete;
 	void operator delete[](void*) = delete;
 	void operator delete(void* pointer);
+	
+	static void flush();
 
 private:
 	explicit LoggingThread() {};
@@ -18,6 +20,8 @@ private:
 	std::shared_ptr<std::condition_variable> _wakeUp;
 
 	std::shared_ptr<std::vector<Channal>> _destination;
+
+	Buffer_ref _buffer_commands;
 
 	void RunningInThread();
 

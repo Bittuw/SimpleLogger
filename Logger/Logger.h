@@ -18,6 +18,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <thread>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -31,7 +32,6 @@ EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::condition_variabl
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::ofstream>;
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::vector<Channal>>;
 
-
 class LOGGER_API Logger
 {
 public:
@@ -41,13 +41,16 @@ public:
 	Logger& operator()(MessageTypes&& = MessageTypes::TRACE);
 	void* operator new(size_t) = delete;
 	void* operator new[](size_t) = delete;
-
+	
+	void start();
 	void operator<<(const char&);
 	void operator<<(const std::string&);
 	static Logger createInstance();
+	//static void onExit();
 
 private:
 	Logger();
+	Logger(const Logger&) = default;
 
 	std::shared_ptr<MessageQueue> _queue; // ќчередь команд
 	std::shared_ptr<std::mutex> _mutex; // ћьютекс доступа
@@ -55,7 +58,7 @@ private:
 
 	MessageTypes typeMessage;
 
-	Logger(const Logger&);
+	
 
 	static bool created;
 
