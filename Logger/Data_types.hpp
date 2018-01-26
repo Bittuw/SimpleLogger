@@ -15,9 +15,15 @@ enum class MessageTypes {
 };
 
 enum class CommandTypes {
-	USER_MESSAGE = 1,
-	EXCEPTION_MESSAGE = 2,
-	EXIT_MESSAGE = 3
+	USER_MESSAGE = 0,
+	EXCEPTION_MESSAGE = 1,
+	EXIT_MESSAGE = 2
+};
+
+static std::string BasicTypeMessageString[] = {
+	"USER_MESSAGE",
+	"EXCEPTION_MESSAGE",
+	"EXIT_MESSAGE"
 };
 
 static std::string TypeMessageString[] = {
@@ -69,7 +75,7 @@ public:
 
 		ss >> sDay >> sMonth >> sYear >> sHour >> sMinute >> sSecond;
 
-		tCurrentTime = sDay + ":" + sMonth + ":" + sYear + " " + sHour + ":" + sMinute + ":" + sSecond;
+		tCurrentTime = sDay + ':' + sMonth + ':' + sYear + ' ' + sHour + ':' + sMinute + ':' + sSecond;
 	};
 };
 
@@ -85,18 +91,38 @@ typedef ChannalLine Channal;
 struct BaseLoggerMessage {
 	CommandTypes _message_type;
 	CurrentTime _message_time;
+	std::string _out_message;
+
+	std::string _time_string;
+	std::string _type_string;
+
 	bool _message_delivered = false;
 
 	BaseLoggerMessage(CommandTypes message_type) 
-		: _message_type(message_type), _message_time()  {}
+		: _message_type(message_type), _message_time() { basic_format(); }
 
 	virtual ~BaseLoggerMessage() {}
 	virtual void work() {};
+	virtual void format() {};
+
+	void basic_format() {
+		std::stringstream ss;
+
+		std::string temp_type;
+		std::string temp_time;
+		std::string temp_data;
+
+		ss << std::setw(17) << BasicTypeMessageString[static_cast<int>(_message_type)] << ' ';
+		ss << _message_time.tCurrentTime;
+		ss >> temp_type >> temp_data >> temp_time;
+
+		_time_string = temp_data + ' ' + temp_time;
+		_type_string = temp_type;
+	};
 };
 
 struct UserMessage : public BaseLoggerMessage {
 	std::string _user_message;
-	std::string _out_message;
 	MessageTypes _type_message;
 	std::shared_ptr<std::ostream> _destination;
 
@@ -115,16 +141,11 @@ struct UserMessage : public BaseLoggerMessage {
 		std::stringstream ss;
 
 		std::string temp_type;
-		std::string temp_time;
-		std::string temp_data;
-		std::string temp_message;
 
 		ss << std::setw(7) << TypeMessageString[static_cast<int>(_type_message)] << ' ';
-		ss << _message_time.tCurrentTime << ' ';
+		ss >> temp_type;
 
-		ss >> temp_type >> temp_data >> temp_time;
-
-		_out_message = temp_type + " || " + temp_data + ' ' + temp_time + " || " + _user_message + "\n";
+		_out_message = _type_string + " :: " +  temp_type + " || " + _time_string + " || " + _user_message + "\n";
 	}
 };
 
@@ -132,19 +153,42 @@ struct ExceptionMessage : public BaseLoggerMessage {
 	std::shared_ptr<std::vector<Channal>> _destination;
 
 	ExceptionMessage(std::shared_ptr<std::vector<Channal>> destination) :
-		BaseLoggerMessage(CommandTypes::EXIT_MESSAGE), _destination(destination){	}
+		BaseLoggerMessage(CommandTypes::EXCEPTION_MESSAGE), _destination(destination){	}
 
 	void work() override {
 		for (auto dist : *_destination) {
 			std::dynamic_pointer_cast<std::ofstream>(dist.out_dist)->close();
 		}
 	}
+
+	void format() override { // TODO override
+
+	}
 };
 
-struct ExitMessage {
+struct ExitMessage : public BaseLoggerMessage {
+	
+	std::shared_ptr<std::ostream> _destination;
+	const std::string _out_ = "Successful exit";
 
+	ExitMessage(std::shared_ptr<std::ostream> destination) :
+		BaseLoggerMessage(CommandTypes::EXIT_MESSAGE), _destination(destination) { format(); }
+
+	void work() override {
+		*_destination << _out_message;
+	}
+
+	void format() override {
+		std::stringstream ss;
+
+		_out_message = _type_string + " || " + _time_string + " || " + _out_;
+	}
 };
 
-using MessageQueue = std::queue<std::shared_ptr<BaseLoggerMessage>>;
-using Buffer_ref = std::shared_ptr<std::vector<std::shared_ptr<BaseLoggerMessage>>>;
+using Destinations_list = std::vector<Channal>;
+using Messages_queue = std::queue<std::shared_ptr<BaseLoggerMessage>>;
+
+using Destinations_list_ref = std::shared_ptr<std::vector<Channal>>;
+using Messages_buffer_ref = std::shared_ptr<std::queue<std::shared_ptr<BaseLoggerMessage>>>;
+using Commands_buffer_ref = std::shared_ptr<std::vector<std::shared_ptr<BaseLoggerMessage>>>;
 

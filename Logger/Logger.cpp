@@ -13,9 +13,10 @@ namespace LoggerThreadState {
 	static std::atomic<bool> exit = false;
 
 	std::shared_ptr<std::condition_variable> exitCV = std::make_shared<std::condition_variable>();
-	std::shared_ptr<MessageQueue> ref_queue;
-	Buffer_ref ref_buffer;
-	std::shared_ptr<std::vector<Channal>> ref_flush;
+	Messages_buffer_ref ref_queue_buffer;
+	Commands_buffer_ref ref_command_buffer;
+
+	Destinations_list_ref ref_destinations;
 	std::shared_ptr<std::mutex> ref_mutex;
 }
 
@@ -25,11 +26,18 @@ void Logger::start() {
 	LoggingThread::startThread(_queue, _mutex, _wakeUp, _destination);
 }
 
+void Logger::stop() {
+	LoggerThreadState::exit = true;
+	_mutex->lock();
+	_queue->push(std::make_shared<ExitMessage>(out_debug));
+	_mutex->unlock();
+}
+
 Logger::Logger() :
-	_queue(std::make_shared<MessageQueue>()),
+	_queue(std::make_shared<Messages_queue>()),
 	_mutex(std::make_shared<std::mutex>()),
 	_wakeUp(std::make_shared<std::condition_variable>()),
-	_destination(std::make_shared<std::vector<Channal>>())
+	_destination(std::make_shared<Destinations_list>())
 {  
 	//LoggingThread::startThread(_queue, _mutex, _wakeUp, _destination);
 
@@ -58,17 +66,12 @@ Logger::Logger() :
 	};
 
 	// For flush on Exit
-	LoggerThreadState::ref_flush = _destination;
+	LoggerThreadState::ref_destinations = _destination;
 	LoggerThreadState::ref_mutex = _mutex;
 
 	std::ios_base::sync_with_stdio(false);
 
-	//const int result = std::atexit(Logger::onExit);
 }
-//
-//void Logger::onExit() {
-//	LoggerThreadState::exit = true;
-//}
 
 Logger& Logger::operator()(MessageTypes&& type) {
 	_mutex->lock();
@@ -78,7 +81,6 @@ Logger& Logger::operator()(MessageTypes&& type) {
 
 void Logger::operator<<(const char& str) { 
 	auto message = std::make_shared<UserMessage>(std::to_string(str), typeMessage, (*_destination)[static_cast<int>(typeMessage)].out_dist);
-	//std::dynamic_pointer_cast<BaseLoggerMessage>(message);
 	_queue->push(message);
 	LoggerThreadState::needWork = true;
 	_mutex->unlock();
@@ -87,13 +89,11 @@ void Logger::operator<<(const char& str) {
 
 void Logger::operator<<(const std::string& str) { 
 	auto message = std::make_shared<UserMessage>(str, typeMessage, (*_destination)[static_cast<int>(typeMessage)].out_dist);
-	//std::dynamic_pointer_cast<BaseLoggerMessage>(message);
 	_queue->push(message);
 	LoggerThreadState::needWork = true;
 	_mutex->unlock();
 	_wakeUp->notify_one();
 }
-
 
 Logger::~Logger() {}
 
@@ -112,7 +112,7 @@ Logger Logger::createInstance() {
 
 bool LoggingThread::created = false;
 
-LoggingThread::LoggingThread(std::shared_ptr<MessageQueue>& queue, std::shared_ptr<std::mutex>& mutex, std::shared_ptr<std::condition_variable>& wakeUp, std::shared_ptr<std::vector<Channal>>& destination) :
+LoggingThread::LoggingThread(Messages_buffer_ref& queue, std::shared_ptr<std::mutex>& mutex, std::shared_ptr<std::condition_variable>& wakeUp, Destinations_list_ref& destination) :
 	_queue(queue),
 	_mutex(mutex),
 	_wakeUp(wakeUp),
@@ -120,11 +120,11 @@ LoggingThread::LoggingThread(std::shared_ptr<MessageQueue>& queue, std::shared_p
 	_buffer_commands(std::make_shared<std::vector<std::shared_ptr<BaseLoggerMessage>>>())
 {
 	LoggerThreadState::working = true;
-	LoggerThreadState::ref_queue = queue;
-	LoggerThreadState::ref_buffer = _buffer_commands;
+	LoggerThreadState::ref_queue_buffer = queue;
+	LoggerThreadState::ref_command_buffer = _buffer_commands;
 }
 
-void LoggingThread::startThread(std::shared_ptr<MessageQueue>& queue, std::shared_ptr<std::mutex>& mutex, std::shared_ptr<std::condition_variable>& wakeUp, std::shared_ptr<std::vector<Channal>>& destination) {
+void LoggingThread::startThread(Messages_buffer_ref& queue, std::shared_ptr<std::mutex>& mutex, std::shared_ptr<std::condition_variable>& wakeUp, std::shared_ptr<std::vector<Channal>>& destination) {
 	if (!created) {
 		std::thread LoggingThread(&LoggingThread::RunningInThread, new LoggingThread(queue, mutex, wakeUp, destination));
 		LoggingThread.detach();
@@ -145,7 +145,7 @@ void LoggingThread::operator delete(void* pointer) {
 
 void LoggingThread::RunningInThread() {
 
-	std::atexit(LoggingThread::flush);
+	std::atexit(LoggingThread::atexti_flush);
 
 	while (!LoggerThreadState::exit) {
 
@@ -169,31 +169,16 @@ void LoggingThread::RunningInThread() {
 	}
 }
 
-void LoggingThread::flush() {
-	try {
+void LoggingThread::atexti_flush() {
+	flush_command_buffer(LoggerThreadState::ref_command_buffer);
+	flush_queue_buffer(LoggerThreadState::ref_queue_buffer);
+	flush_destination_buffers(LoggerThreadState::ref_destinations);
+	LoggerThreadState::working = false;
+}
 
-		if (!LoggerThreadState::ref_buffer->empty())
-			for (auto command : *(LoggerThreadState::ref_buffer))
-				if (!command->_message_delivered)
-					command->work();
-
-		LoggerThreadState::ref_buffer->clear();
-
-		if (!LoggerThreadState::ref_queue->empty())
-			while (!LoggerThreadState::ref_queue->empty()) {
-				auto command = LoggerThreadState::ref_queue->front();
-				LoggerThreadState::ref_queue->pop();
-				command->work();
-			}
-
-		
-
-		for (auto dist : *LoggerThreadState::ref_flush) {
-			dist.out_dist->flush();
-			std::dynamic_pointer_cast<std::ofstream>(dist.out_dist)->close();
-		}
-	}
-	catch (...) {
-		auto i = 0;
-	}
+LoggingThread::~LoggingThread() {
+	flush_command_buffer(_buffer_commands);
+	flush_queue_buffer(_queue);
+	flush_destination_buffers(_destination);
+	LoggerThreadState::working = false;
 }

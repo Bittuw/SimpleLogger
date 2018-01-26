@@ -1,9 +1,10 @@
-/Debug
-/Release
 /ipch
 .vs/
-/Logger/Debug
-/Logger/Relese
+*/.vs/
+*/Debug/
+*/Relese/
+/Debug
+/Release
 *.db
 x64/
 *.opendb

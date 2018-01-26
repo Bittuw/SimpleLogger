@@ -12,6 +12,10 @@
 #define EXPIMP_TEMPLATE extern
 #endif
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 #include <Windows.h>
 #include <iostream>
 #include <tchar.h>
@@ -19,6 +23,7 @@
 #include <sstream>
 #include <iomanip>
 #include <thread>
+#include <string>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -27,10 +32,11 @@
 #include "Data_types.hpp"
 
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::mutex>;
-EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<MessageQueue>;
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::condition_variable>;
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::ofstream>;
 EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::vector<Channal>>;
+EXPIMP_TEMPLATE template class LOGGER_API std::shared_ptr<std::queue<std::shared_ptr<BaseLoggerMessage>>>;
+
 
 class LOGGER_API Logger
 {
@@ -43,6 +49,8 @@ public:
 	void* operator new[](size_t) = delete;
 	
 	void start();
+	void stop();
+
 	void operator<<(const char&);
 	void operator<<(const std::string&);
 	static Logger createInstance();
@@ -52,7 +60,7 @@ private:
 	Logger();
 	Logger(const Logger&) = default;
 
-	std::shared_ptr<MessageQueue> _queue; // Очередь команд
+	Messages_buffer_ref _queue; // Очередь команд
 	std::shared_ptr<std::mutex> _mutex; // Мьютекс доступа
 	std::shared_ptr<std::condition_variable> _wakeUp; // Запустить считывание
 
@@ -66,7 +74,7 @@ private:
 	std::shared_ptr<std::ofstream> out_error;
 	std::shared_ptr<std::ofstream> out_event;
 
-	std::shared_ptr<std::vector<Channal>> _destination;
+	Destinations_list_ref _destination;
 	std::string path;
 };
 
