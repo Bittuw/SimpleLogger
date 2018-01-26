@@ -1,5 +1,5 @@
 ﻿  stdafx.cpp
-c:\work\c++\simplelogger\logger\logger.h(78): warning C4251: Logger::path: class "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" должен иметь dll-интерфейс для использования клиентами class "Logger"
+c:\work\c++\simplelogger\logger\logger.h(72): warning C4251: Logger::path: class "std::basic_string<char,std::char_traits<char>,std::allocator<char>>" должен иметь dll-интерфейс для использования клиентами class "Logger"
   c:\program files (x86)\microsoft visual studio 14.0\vc\include\xstring(2633): note:  см. объявление "std::basic_string<char,std::char_traits<char>,std::allocator<char>>"
   TestLogger.cpp
   TestLogger.vcxproj -> C:\work\C++\SimpleLogger\Debug\TestLogger.exe

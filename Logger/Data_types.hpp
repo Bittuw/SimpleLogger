@@ -1,5 +1,10 @@
 #pragma once
 
+#include <Windows.h>
+#include <sstream>
+#include <iomanip>
+#include <queue>
+
 enum class ModeTypes {
 	WriteDestinationOnly = 0,
 	WriteDestinationAndConsole = 1

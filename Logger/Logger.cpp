@@ -2,10 +2,13 @@
 //
 
 #include "stdafx.h"
-#include "Logger.h"
-#include "LoggerThread.h"
+#include <tchar.h>
 #include <atomic>
 #include <cassert>
+
+#include "Logger.h"
+#include "LoggerThread.h"
+
 
 namespace LoggerThreadState {
 	static std::atomic<bool> needWork = false;
@@ -39,8 +42,6 @@ Logger::Logger() :
 	_wakeUp(std::make_shared<std::condition_variable>()),
 	_destination(std::make_shared<Destinations_list>())
 {  
-	//LoggingThread::startThread(_queue, _mutex, _wakeUp, _destination);
-
 	wchar_t buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, sizeof(buffer));
 	std::wstring buffer_w(buffer);

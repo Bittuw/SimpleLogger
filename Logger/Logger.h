@@ -16,17 +16,11 @@
 #undef ERROR
 #endif
 
-#include <Windows.h>
 #include <iostream>
-#include <tchar.h>
 #include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <thread>
 #include <string>
 #include <memory>
 #include <mutex>
-#include <queue>
 
 #include "LoggerFormat.hpp"
 #include "Data_types.hpp"
