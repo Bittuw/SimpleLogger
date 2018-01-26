@@ -71,9 +71,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\work\C++\SimpleLogger\Logger;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\work\C++\SimpleLogger\Debug;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>C:\work\C++\SimpleLogger\Debug;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)\Logger;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Debug;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SolutionDir)\Debug;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
