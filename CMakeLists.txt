@@ -25,7 +25,7 @@ add_library (${PROJECT} SHARED
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE -D_MBCS UNICODE _UNICODE)
+target_compile_definitions(${PROJECT_NAME} PRIVATE UNICODE _UNICODE WIN32_LEAD_AND_MEAN)
 
 install (TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
