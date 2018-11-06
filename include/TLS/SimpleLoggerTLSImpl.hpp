@@ -1,6 +1,11 @@
 #ifndef SIMPLE_LOGGER_TLS_IMPL
 #define SIMPLE_LOGGER_TLS_IMPL
 
+#ifdef _WIN32 || _WIN64
+    #include "Utils/SehGuard.hpp"
+#elif __linux__
+#endif
+
 // NOTE: if windows, we only use _set_se_translator for translate 
 
 /**
@@ -35,6 +40,11 @@ namespace simplelogger::tls {
         void init_failure_capture() noexcept; // For WIN32 AND Linux impl;
 
 #ifdef _WIN32
+        /**
+         * @brief Using fot catch all win exception
+         * 
+         */
+        simplelogger::utils::SehGuard auto_guard; 
 #elif __linux__
 #endif
     };

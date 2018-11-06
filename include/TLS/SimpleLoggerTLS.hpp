@@ -12,7 +12,8 @@ namespace simplelogger::tls {
     class SimpleLoggerTLSImpl;
 
     /**
-     * @brief Class, that present thread local instance of SimpleLogger
+     * @brief Class, that present thread local instance of SimpleLogger,
+     * all communication with logger through this instance
      * 
      */
     class SimpleLoggerTLS {
